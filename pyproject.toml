@@ -1,0 +1,24 @@
+[project]
+name = "epi-dataset-toolkit"
+version = "0.1.0"
+description = "Curation and auditing tools for PPE object-detection datasets"
+readme = "README.md"
+authors = [
+    { name = "João Gabriel Gomes", email = "j.gabriel.gomes2976@gmail.com" }
+]
+requires-python = ">=3.14"
+dependencies = [
+    "imagehash>=4.3.2",
+    "opencv-python>=5.0.0.93",
+    "pillow>=12.3.0",
+    "polars>=1.44.1",
+    "pyyaml>=6.0.3",
+    "ultralytics>=8.4.140",
+]
+
+[project.scripts]
+epi-visualize = "epi_dataset_toolkit.visualizer:main"
+
+[build-system]
+requires = ["uv_build>=0.12.5,<0.13.0"]
+build-backend = "uv_build"
