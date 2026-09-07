@@ -262,7 +262,10 @@ vez de esticada para escondê-la.
 
 ## Dados
 
-Os datasets **não** ficam versionados aqui.
+Os datasets **não** ficam versionados aqui. A proveniência de cada vídeo de
+origem, com a licença de cada um e o que ela permite redistribuir, está em
+[SOURCES.md](SOURCES.md); o `extract.sh` reconstrói as imagens a partir das
+fontes.
 
 O toolkit foi desenvolvido contra dois:
 
