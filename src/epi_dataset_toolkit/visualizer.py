@@ -33,6 +33,12 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--format", choices=sorted(READERS), default="yolo")
     parser.add_argument("--thickness", type=int, default=2, help="box line width in pixels")
     parser.add_argument(
+        "--no-legend",
+        dest="legend",
+        action="store_false",
+        help="drop the color key drawn in the corner",
+    )
+    parser.add_argument(
         "--color",
         action="append",
         default=[],
@@ -81,7 +87,12 @@ def main(argv: list[str] | None = None) -> int:
             continue
 
         canvas = draw_boxes(
-            image, boxes, dataset.class_names, palette, thickness=args.thickness
+            image,
+            boxes,
+            dataset.class_names,
+            palette,
+            thickness=args.thickness,
+            legend=args.legend,
         )
         cv2.imwrite(str(args.out / image_path.name), canvas)
         written += 1
