@@ -80,6 +80,49 @@ convenção entre os dois, não a qualidade dele — `--no-rules` limita a audit
 Por padrão o código de saída só é 1 quando há label ilegível, ausente ou órfã —
 violação de regra é julgamento humano, não motivo para quebrar um build.
 
+## `epi-dedup`
+
+Encontra frames quase idênticos — o problema específico de datasets extraídos de
+vídeo, onde dois frames a um segundo de distância são arquivos diferentes com
+praticamente os mesmos pixels.
+
+```bash
+uv run epi-dedup --data /caminho/dataset/data.yaml --distance 4
+```
+
+Por padrão só relata. `--apply` apaga as sobras de cada grupo, junto com os
+labels. `--distance` é a distância de Hamming entre hashes perceptuais: `0` é
+idêntico depois de reduzir a imagem, e a faixa útil para frames consecutivos
+fica logo acima disso.
+
+## `epi-split`
+
+Divide em train/valid/test **sem quebrar grupos de imagens parecidas**.
+
+```bash
+uv run epi-split --data /caminho/dataset/data.yaml --out dataset-split --ratios 70/20/10
+```
+
+Dividir ao acaso um dataset feito de frames de vídeo vaza: o modelo encontra o
+conjunto de teste durante o treino, e a métrica sobe sem que ele tenha
+aprendido nada que sobreviva a imagens novas. Por isso a unidade da divisão não
+é a imagem, é o grupo de imagens parecidas, que vai inteiro para um lado só.
+
+No dataset próprio deste repositório a diferença é medível: o split agrupado
+deixa **0** pares quase idênticos atravessando splits, contra **33** de um
+sorteio aleatório com as mesmas proporções.
+
+| flag | efeito |
+|---|---|
+| `--out` | pasta onde montar a divisão (obrigatório) |
+| `--ratios` | proporções `train/valid/test` (padrão: `70/20/10`) |
+| `--seed` | mesma semente, mesma divisão (padrão: 0) |
+| `--group-by` | `similarity` (padrão) ou `none` para sortear imagem a imagem |
+| `--symlink` | cria links em vez de copiar os arquivos |
+
+A saída já vem com um `data.yaml`, então o resultado pode ser lido de volta com
+`--data` pelas outras ferramentas.
+
 ## Organização
 
 Cada módulo tem uma responsabilidade só, e as dependências apontam para o
@@ -93,9 +136,13 @@ centro — `Box` — em vez de umas para as outras:
 | `rendering.py` | desenhar caixas numa imagem; não conhece disco nem formato |
 | `palette.py` | gerar N cores distintas para N classes |
 | `validation.py` | as checagens, puras: sem disco, sem CLI, sem OpenCV |
+| `duplicates.py` | hash perceptual e agrupamento por semelhança |
+| `splitting.py` | repartir grupos em train/valid/test; pura e determinística |
 | `cli.py` | os argumentos que todas as ferramentas compartilham |
 | `visualizer.py` | CLI da Etapa 1 |
 | `validator.py` | CLI da Etapa 3 |
+| `deduplicator.py` | CLI da Etapa 4 |
+| `splitter.py` | CLI da Etapa 4 |
 
 Consequência prática: adicionar suporte a COCO é escrever `read_coco()` em
 `formats.py` e registrá-lo no dicionário `READERS`. Nada mais muda.

@@ -17,6 +17,8 @@ dependencies = [
 [project.scripts]
 epi-visualize = "epi_dataset_toolkit.visualizer:main"
 epi-validate = "epi_dataset_toolkit.validator:main"
+epi-dedup = "epi_dataset_toolkit.deduplicator:main"
+epi-split = "epi_dataset_toolkit.splitter:main"
 
 [build-system]
 requires = ["uv_build>=0.12.5,<0.13.0"]
