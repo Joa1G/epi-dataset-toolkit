@@ -38,3 +38,27 @@ class Box:
     def area(self) -> float:
         """Normalized area. Near-zero means a degenerate box (Step 3 checks this)."""
         return self.width * self.height
+
+    @property
+    def bounds(self) -> tuple[float, float, float, float]:
+        """Normalized (left, top, right, bottom), the form overlap math needs."""
+        return (
+            self.x_center - self.width / 2,
+            self.y_center - self.height / 2,
+            self.x_center + self.width / 2,
+            self.y_center + self.height / 2,
+        )
+
+    def intersection(self, other: "Box") -> float:
+        """Normalized area shared with `other`; 0.0 when they do not touch."""
+        left = max(self.bounds[0], other.bounds[0])
+        top = max(self.bounds[1], other.bounds[1])
+        right = min(self.bounds[2], other.bounds[2])
+        bottom = min(self.bounds[3], other.bounds[3])
+        return max(0.0, right - left) * max(0.0, bottom - top)
+
+    def iou(self, other: "Box") -> float:
+        """Intersection over union: 1.0 for identical boxes, 0.0 for disjoint."""
+        overlap = self.intersection(other)
+        union = self.area + other.area - overlap
+        return overlap / union if union > 0 else 0.0

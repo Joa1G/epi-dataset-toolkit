@@ -7,12 +7,9 @@ from pathlib import Path
 import cv2
 
 from .boxes import AnnotationError
-from .datasets import Dataset, dataset_from_dirs, load_yolo_dataset
-from .formats import AnnotationReader, read_yolo
+from .cli import READERS, add_source_arguments, load_dataset
 from .palette import Color, build_palette, parse_hex_color
 from .rendering import draw_boxes
-
-READERS: dict[str, AnnotationReader] = {"yolo": read_yolo}
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -21,16 +18,10 @@ def build_parser() -> argparse.ArgumentParser:
         description="Draw a detection dataset's bounding boxes onto its images.",
     )
 
-    source = parser.add_argument_group("dataset source")
-    source.add_argument("--data", type=Path, help="path to data.yaml")
-    source.add_argument("--images", type=Path, help="image folder, instead of --data")
-    source.add_argument("--labels", type=Path, help="label folder (default: sibling 'labels')")
-    source.add_argument("--names", help="comma-separated class names, required with --images")
+    add_source_arguments(parser)
 
-    parser.add_argument("--split", default="train", help="split to render (default: train)")
     parser.add_argument("--limit", type=int, default=30, help="how many images (0 = all)")
     parser.add_argument("--out", type=Path, default=Path("visualized"), help="output folder")
-    parser.add_argument("--format", choices=sorted(READERS), default="yolo")
     parser.add_argument("--thickness", type=int, default=2, help="box line width in pixels")
     parser.add_argument(
         "--no-legend",
@@ -53,7 +44,7 @@ def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
 
     try:
-        dataset = _load_dataset(args)
+        dataset = load_dataset(args)
         split = dataset.split(args.split)
         palette = _build_palette(dataset.class_names, args.color)
     except (KeyError, ValueError, FileNotFoundError) as exc:
@@ -102,21 +93,6 @@ def main(argv: list[str] | None = None) -> int:
         f" | {missing} without label | {unreadable} unreadable | {broken} malformed"
     )
     return 0
-
-
-def _load_dataset(args: argparse.Namespace) -> Dataset:
-    if args.data:
-        if args.names:
-            raise ValueError("--names is only for --images; data.yaml owns the class names")
-        return load_yolo_dataset(args.data)
-
-    if not args.images:
-        raise ValueError("pass either --data or --images")
-    if not args.names:
-        raise ValueError("--images also needs --names")
-
-    names = [name.strip() for name in args.names.split(",") if name.strip()]
-    return dataset_from_dirs(args.images, args.labels, names, split_name=args.split)
 
 
 def _build_palette(class_names: tuple[str, ...], overrides: list[str]) -> list[Color]:

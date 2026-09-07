@@ -5,13 +5,17 @@ from .datasets import Dataset, Split, dataset_from_dirs, load_yolo_dataset
 from .formats import read_yolo
 from .palette import build_palette
 from .rendering import draw_boxes
+from .validation import Finding, Roles, check_image
 
 __all__ = [
     "AnnotationError",
     "Box",
     "Dataset",
+    "Finding",
+    "Roles",
     "Split",
     "build_palette",
+    "check_image",
     "dataset_from_dirs",
     "draw_boxes",
     "load_yolo_dataset",
