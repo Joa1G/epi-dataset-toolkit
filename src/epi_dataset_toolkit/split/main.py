@@ -7,9 +7,9 @@ from pathlib import Path
 
 import yaml
 
-from .cli import add_source_arguments, load_dataset
-from .duplicates import DEFAULT_DISTANCE, group_by_similarity, hash_images
-from .splitting import assign_groups, parse_ratios
+from ..core.cli import add_source_arguments, load_dataset
+from ..core.similarity import DEFAULT_DISTANCE, group_by_similarity, hash_images
+from .assignment import assign_groups, parse_ratios
 
 
 def build_parser() -> argparse.ArgumentParser:

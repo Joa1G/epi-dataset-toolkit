@@ -5,10 +5,10 @@ import sys
 from collections import Counter
 from pathlib import Path
 
-from .boxes import AnnotationError, Box
-from .cli import READERS, add_source_arguments, load_dataset
-from .datasets import IMAGE_SUFFIXES
-from .validation import Finding, Roles, check_image
+from ..core.boxes import AnnotationError, Box
+from ..core.cli import READERS, add_source_arguments, load_dataset
+from ..core.datasets import IMAGE_SUFFIXES
+from .rules import Finding, Roles, check_image
 
 # Enough lines to see the shape of a problem without burying the summary.
 _EXAMPLES_PER_RULE = 5

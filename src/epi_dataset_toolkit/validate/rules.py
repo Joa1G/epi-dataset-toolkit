@@ -9,7 +9,7 @@ has the classes those rules talk about.
 from collections.abc import Iterator, Sequence
 from dataclasses import dataclass
 
-from .boxes import Box
+from ..core.boxes import Box
 
 # A box smaller than this is almost certainly a stray click, not an object.
 MIN_AREA = 1e-6

@@ -8,9 +8,9 @@ from pathlib import Path
 import yaml
 from PIL import Image
 
-from .boxes import AnnotationError
-from .cli import READERS, add_source_arguments, load_dataset
-from .conversion import ImageEntry, from_coco, label_path_for, to_coco, to_yolo_lines
+from ..core.boxes import AnnotationError
+from ..core.cli import READERS, add_source_arguments, load_dataset
+from .coco import ImageEntry, from_coco, label_path_for, to_coco, to_yolo_lines
 
 
 def build_parser() -> argparse.ArgumentParser:

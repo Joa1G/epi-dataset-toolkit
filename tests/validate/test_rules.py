@@ -1,7 +1,7 @@
 """The rules from ANNOTATION_GUIDE.md, as executable checks."""
 
-from epi_dataset_toolkit.boxes import Box
-from epi_dataset_toolkit.validation import Roles, check_image
+from epi_dataset_toolkit.core.boxes import Box
+from epi_dataset_toolkit.validate.rules import Roles, check_image
 
 NAMES = ["head", "helmet", "person", "reflective-vest"]
 ROLES = Roles.from_names(NAMES)

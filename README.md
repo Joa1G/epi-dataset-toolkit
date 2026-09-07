@@ -203,26 +203,52 @@ arquivos de imagem precisam ser copiados à parte.
 
 ## Organização
 
-Cada módulo tem uma responsabilidade só, e as dependências apontam para o
-centro — `Box` — em vez de umas para as outras:
+Uma pasta por ferramenta, mais `core/` para o que é compartilhado:
 
-| módulo | responsabilidade |
-|---|---|
-| `boxes.py` | o tipo `Box` (coordenadas normalizadas), vocabulário comum |
-| `formats.py` | leitores de anotação; hoje só YOLO, o protocolo abre para COCO |
-| `datasets.py` | achar imagens e labels no disco, ler `data.yaml`, resolver splits |
-| `rendering.py` | desenhar caixas numa imagem; não conhece disco nem formato |
-| `palette.py` | gerar N cores distintas para N classes |
-| `validation.py` | as checagens, puras: sem disco, sem CLI, sem OpenCV |
-| `duplicates.py` | hash perceptual e agrupamento por semelhança |
-| `splitting.py` | repartir grupos em train/valid/test; pura e determinística |
-| `conversion.py` | YOLO <-> COCO; a aritmética de âncora, escala e ids |
-| `cli.py` | os argumentos que todas as ferramentas compartilham |
-| `visualizer.py` | CLI da Etapa 1 |
-| `validator.py` | CLI da Etapa 3 |
-| `deduplicator.py` | CLI da Etapa 4 |
-| `splitter.py` | CLI da Etapa 4 |
-| `converter.py` | CLI da Etapa 5 |
+```
+src/epi_dataset_toolkit/
+├── core/            o que mais de uma ferramenta precisa
+│   ├── boxes.py         o tipo Box (coordenadas normalizadas), vocabulário comum
+│   ├── formats.py       leitores de anotação, um por formato
+│   ├── datasets.py      achar imagens e labels, ler data.yaml, resolver splits
+│   ├── similarity.py    hash perceptual e agrupamento por semelhança
+│   └── cli.py           os argumentos que todas as ferramentas compartilham
+├── visualize/       epi-visualize
+│   ├── palette.py       N cores distintas para N classes
+│   ├── rendering.py     desenhar caixas; não conhece disco nem formato
+│   └── main.py
+├── validate/        epi-validate
+│   ├── rules.py         as checagens, puras: sem disco, sem CLI, sem OpenCV
+│   └── main.py
+├── dedup/           epi-dedup
+│   └── main.py
+├── split/           epi-split
+│   ├── assignment.py    repartir grupos; pura e determinística
+│   └── main.py
+└── convert/         epi-convert
+    ├── coco.py          YOLO <-> COCO; a aritmética de âncora, escala e ids
+    └── main.py
+```
+
+A regra que decide onde cada coisa mora: **`core/` é o que mais de uma
+ferramenta precisa, e nenhuma pasta de ferramenta importa outra.** Foi assim que
+`similarity.py` foi parar em `core/` — o `epi-dedup` e o `epi-split` usam os dois.
+
+Essa regra não está só escrita aqui. `tests/test_architecture.py` lê os imports
+com `ast` e falha se alguma ferramenta alcançar outra de lado — uma afirmação de
+README apodrece no primeiro atalho, um teste não.
+
+Os testes espelham a mesma divisão, então "onde está o teste disto" tem resposta
+óbvia:
+
+```
+tests/
+├── core/       test_boxes.py  test_similarity.py
+├── validate/   test_rules.py
+├── split/      test_assignment.py
+├── convert/    test_coco.py
+└── test_architecture.py
+```
 
 O protocolo `AnnotationReader` assume **um arquivo por imagem**, o que vale
 para YOLO e para os formatos XML por imagem — para esses, adicionar suporte é
@@ -230,8 +256,8 @@ escrever a função e registrá-la no dicionário `READERS`, e nada mais muda.
 
 COCO não cabe aí, e escrever a Etapa 5 foi o que mostrou isso: o documento é
 único para o dataset inteiro e carrega as dimensões das imagens contra as
-quais as caixas são medidas. Por isso COCO é conversão (`conversion.py`) e não
-leitor. A fronteira do protocolo está desenhada onde ela realmente está, em
+quais as caixas são medidas. Por isso COCO é conversão (`convert/coco.py`) e
+não leitor. A fronteira do protocolo está desenhada onde ela realmente está, em
 vez de esticada para escondê-la.
 
 ## Dados

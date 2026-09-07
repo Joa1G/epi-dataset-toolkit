@@ -3,8 +3,8 @@
 import argparse
 import sys
 
-from .cli import add_source_arguments, load_dataset
-from .duplicates import DEFAULT_DISTANCE, group_by_similarity, hash_images
+from ..core.cli import add_source_arguments, load_dataset
+from ..core.similarity import DEFAULT_DISTANCE, group_by_similarity, hash_images
 
 
 def build_parser() -> argparse.ArgumentParser:

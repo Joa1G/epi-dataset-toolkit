@@ -22,7 +22,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from .boxes import AnnotationError, Box
+from ..core.boxes import AnnotationError, Box
 
 
 @dataclass(frozen=True, slots=True)

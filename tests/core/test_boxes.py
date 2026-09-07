@@ -2,7 +2,7 @@
 
 import pytest
 
-from epi_dataset_toolkit.boxes import Box
+from epi_dataset_toolkit.core.boxes import Box
 
 
 def test_to_corners_anchors_on_the_center():

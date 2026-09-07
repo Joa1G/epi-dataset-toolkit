@@ -8,8 +8,8 @@ numbers worked out by hand.
 
 import pytest
 
-from epi_dataset_toolkit.boxes import AnnotationError, Box
-from epi_dataset_toolkit.conversion import ImageEntry, from_coco, to_coco, to_yolo_lines
+from epi_dataset_toolkit.core.boxes import AnnotationError, Box
+from epi_dataset_toolkit.convert.coco import ImageEntry, from_coco, to_coco, to_yolo_lines
 
 NAMES = ["head", "helmet", "person"]
 

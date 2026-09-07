@@ -5,7 +5,7 @@ from collections.abc import Iterable, Sequence
 import cv2
 import numpy as np
 
-from .boxes import Box
+from ..core.boxes import Box
 from .palette import Color
 
 _FONT = cv2.FONT_HERSHEY_SIMPLEX

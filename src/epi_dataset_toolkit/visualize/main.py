@@ -6,8 +6,8 @@ from pathlib import Path
 
 import cv2
 
-from .boxes import AnnotationError
-from .cli import READERS, add_source_arguments, load_dataset
+from ..core.boxes import AnnotationError
+from ..core.cli import READERS, add_source_arguments, load_dataset
 from .palette import Color, build_palette, parse_hex_color
 from .rendering import draw_boxes
 
