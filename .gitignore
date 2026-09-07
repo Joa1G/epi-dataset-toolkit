@@ -11,3 +11,6 @@ wheels/
 
 visualized/
 data/
+
+# artefatos de release, montados por scripts/build-release.sh
+/dist/
