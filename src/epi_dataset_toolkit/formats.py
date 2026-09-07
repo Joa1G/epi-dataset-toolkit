@@ -9,8 +9,13 @@ from .boxes import AnnotationError, Box
 class AnnotationReader(Protocol):
     """Everything the rest of the toolkit needs from an annotation format.
 
-    Any callable with this shape can be dropped in, so adding COCO support in
-    Step 5 means writing read_coco() and changing nothing else.
+    One file per image is the assumption baked into this shape, and it holds
+    for YOLO and for the per-image XML formats. It does not hold for COCO,
+    whose single document describes the whole dataset and carries the image
+    dimensions the boxes are measured against - so COCO is not a reader here
+    but a conversion, in conversion.py. Writing the converter is what showed
+    this Protocol has a boundary; it is drawn here on purpose rather than
+    stretched to hide it.
     """
 
     def __call__(self, path: Path) -> list[Box]: ...

@@ -1,6 +1,7 @@
 """Tools for auditing and curating PPE object-detection datasets."""
 
 from .boxes import AnnotationError, Box
+from .conversion import ImageEntry, from_coco, to_coco
 from .datasets import Dataset, Split, dataset_from_dirs, load_yolo_dataset
 from .duplicates import group_by_similarity, hash_images
 from .formats import read_yolo
@@ -14,15 +15,18 @@ __all__ = [
     "Box",
     "Dataset",
     "Finding",
+    "ImageEntry",
     "Roles",
     "Split",
     "assign_groups",
     "build_palette",
     "check_image",
     "dataset_from_dirs",
+    "from_coco",
     "group_by_similarity",
     "draw_boxes",
     "hash_images",
     "load_yolo_dataset",
     "read_yolo",
+    "to_coco",
 ]

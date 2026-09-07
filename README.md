@@ -123,6 +123,38 @@ sorteio aleatório com as mesmas proporções.
 A saída já vem com um `data.yaml`, então o resultado pode ser lido de volta com
 `--data` pelas outras ferramentas.
 
+## `epi-convert`
+
+Converte entre YOLO e COCO, nos dois sentidos.
+
+```bash
+# YOLO -> COCO
+uv run epi-convert --data /caminho/dataset/data.yaml --out anotacoes.json
+
+# COCO -> YOLO
+uv run epi-convert --coco anotacoes.json --out dataset-yolo/
+```
+
+Os dois formatos diferem em **duas coisas ao mesmo tempo**, e é por isso que
+conversor escrito de memória sai sutilmente errado:
+
+```
+YOLO   class_id  x_center y_center w h   frações da imagem
+COCO   bbox      x_min    y_min    w h   pixels
+```
+
+A âncora vai do centro para o canto superior esquerdo *e* os números deixam de
+ser normalizados. Acertar uma e esquecer a outra põe cada caixa num lugar
+plausível, só que errado — e isso não aparece até alguém desenhar as caixas.
+
+Há uma terceira armadilha sem conta nenhuma: id de classe no YOLO começa em 0,
+id de categoria no COCO começa em 1 por convenção. Na leitura nada é assumido —
+as categorias são ordenadas por id e a **posição** vira o índice YOLO, então um
+arquivo numerado de outro jeito converte igual.
+
+Verificado nas 2160 caixas do dataset próprio: a maior divergência numa ida e
+volta completa foi `5e-7`, que é o arredondamento de 6 casas da escrita.
+
 ## Organização
 
 Cada módulo tem uma responsabilidade só, e as dependências apontam para o
@@ -138,14 +170,23 @@ centro — `Box` — em vez de umas para as outras:
 | `validation.py` | as checagens, puras: sem disco, sem CLI, sem OpenCV |
 | `duplicates.py` | hash perceptual e agrupamento por semelhança |
 | `splitting.py` | repartir grupos em train/valid/test; pura e determinística |
+| `conversion.py` | YOLO <-> COCO; a aritmética de âncora, escala e ids |
 | `cli.py` | os argumentos que todas as ferramentas compartilham |
 | `visualizer.py` | CLI da Etapa 1 |
 | `validator.py` | CLI da Etapa 3 |
 | `deduplicator.py` | CLI da Etapa 4 |
 | `splitter.py` | CLI da Etapa 4 |
+| `converter.py` | CLI da Etapa 5 |
 
-Consequência prática: adicionar suporte a COCO é escrever `read_coco()` em
-`formats.py` e registrá-lo no dicionário `READERS`. Nada mais muda.
+O protocolo `AnnotationReader` assume **um arquivo por imagem**, o que vale
+para YOLO e para os formatos XML por imagem — para esses, adicionar suporte é
+escrever a função e registrá-la no dicionário `READERS`, e nada mais muda.
+
+COCO não cabe aí, e escrever a Etapa 5 foi o que mostrou isso: o documento é
+único para o dataset inteiro e carrega as dimensões das imagens contra as
+quais as caixas são medidas. Por isso COCO é conversão (`conversion.py`) e não
+leitor. A fronteira do protocolo está desenhada onde ela realmente está, em
+vez de esticada para escondê-la.
 
 ## Dados
 
