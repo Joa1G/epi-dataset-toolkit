@@ -12,5 +12,5 @@ wheels/
 visualized/
 data/
 
-# artefatos de release, montados por scripts/build-release.sh
+# zip do dataset, sobe como asset do release
 /dist/
