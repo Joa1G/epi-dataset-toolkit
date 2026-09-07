@@ -40,6 +40,8 @@ uv run epi-visualize \
 Ao final imprime um resumo: quantas imagens foram escritas, quantas ficaram sem
 label, quantas não puderam ser lidas e quantas tinham label malformado.
 
+Há seis saídas comentadas em [`examples/`](examples/).
+
 ## `epi-validate`
 
 Audita o dataset e imprime um relatório: distribuição de classes, imagens sem
