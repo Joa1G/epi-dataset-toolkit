@@ -1,12 +1,49 @@
 # epi-dataset-toolkit
 
-Ferramentas para auditar e curar datasets de detecção de EPI (capacete, colete,
-pessoa) em canteiro de obra.
+Ferramentas de linha de comando para auditar e curar datasets de detecção de EPI
+— capacete, colete refletivo, pessoa — em canteiro de obra.
+
+![](examples/03-cabecas-sem-capacete.jpg)
+
+A premissa do repositório é que a qualidade de um detector é decidida antes do
+treino. Um dataset com anotação inconsistente, frames duplicados atravessando
+o split ou caixas em coordenadas erradas produz uma métrica alta que não
+sobrevive a imagens novas. Estas cinco ferramentas existem para encontrar isso
+enquanto ainda dá para corrigir.
+
+| ferramenta | o que faz |
+|---|---|
+| [`epi-visualize`](#epi-visualize) | desenha as caixas sobre as imagens, para inspeção |
+| [`epi-validate`](#epi-validate) | audita estrutura e regras de anotação |
+| [`epi-dedup`](#epi-dedup) | acha frames quase idênticos |
+| [`epi-split`](#epi-split) | divide em train/valid/test sem vazamento |
+| [`epi-convert`](#epi-convert) | converte entre YOLO e COCO |
+
+O caminho típico, de um vídeo anotado até um dataset pronto para treinar:
+
+```bash
+uv run epi-validate --images data/images --labels data/labels --names head,helmet,person
+uv run epi-visualize --images data/images --labels data/labels --names head,helmet,person
+uv run epi-split     --images data/images --labels data/labels --names head,helmet,person \
+                     --out dataset-split
+```
+
+O `epi-split` já escreve um `data.yaml`, então dali em diante tudo aceita
+`--data dataset-split/data.yaml`.
 
 ## Instalação
 
 ```bash
 uv sync
+```
+
+Requer Python 3.14. As dependências são quatro: `opencv-python`, `pyyaml`,
+`imagehash` e `pillow`.
+
+## Testes
+
+```bash
+uv run pytest
 ```
 
 ## `epi-visualize`
@@ -154,6 +191,15 @@ arquivo numerado de outro jeito converte igual.
 
 Verificado nas 2160 caixas do dataset próprio: a maior divergência numa ida e
 volta completa foi `5e-7`, que é o arredondamento de 6 casas da escrita.
+
+| flag | efeito |
+|---|---|
+| `--coco` | json de entrada; presente, converte COCO -> YOLO |
+| `--out` | arquivo (para COCO) ou pasta (para YOLO), obrigatório |
+| `--limit` | quantas imagens converter; `0` para todas (padrão: todas) |
+
+O COCO não carrega as imagens, só as referencia — na volta para YOLO, os
+arquivos de imagem precisam ser copiados à parte.
 
 ## Organização
 

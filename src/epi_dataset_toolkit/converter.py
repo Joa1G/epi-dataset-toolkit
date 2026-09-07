@@ -21,6 +21,7 @@ def build_parser() -> argparse.ArgumentParser:
     add_source_arguments(parser)
 
     parser.add_argument("--coco", type=Path, help="COCO json to read, for the other direction")
+    parser.add_argument("--limit", type=int, default=0, help="how many images (0 = all)")
     parser.add_argument("--out", type=Path, required=True, help="file (to coco) or folder (to yolo)")
     return parser
 
@@ -45,7 +46,7 @@ def _yolo_to_coco(args: argparse.Namespace) -> int:
     entries: list[ImageEntry] = []
     skipped = 0
 
-    for image_path, label_path in split.pairs():
+    for image_path, label_path in split.pairs(limit=args.limit or None):
         if not label_path.exists():
             skipped += 1
             continue
