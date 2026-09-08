@@ -14,7 +14,7 @@ from .rendering import draw_boxes
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        prog="epi-visualize",
+        prog="yolo-visualize",
         description="Draw a detection dataset's bounding boxes onto its images.",
     )
 

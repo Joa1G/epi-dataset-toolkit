@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from epi_dataset_toolkit.split.assignment import assign_groups, parse_ratios
+from yolo_dataset_toolkit.split.assignment import assign_groups, parse_ratios
 
 
 def groups_of(*sizes: int) -> list[list[Path]]:

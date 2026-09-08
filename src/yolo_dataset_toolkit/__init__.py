@@ -1,4 +1,4 @@
-"""Tools for auditing and curating PPE object-detection datasets.
+"""Tools for auditing and curating YOLO object-detection datasets.
 
 Layout: core/ holds what more than one tool needs, and each remaining folder
 is one command. No tool folder imports another - anything two of them share
@@ -11,7 +11,7 @@ from .core.datasets import Dataset, Split, dataset_from_dirs, load_yolo_dataset
 from .core.formats import read_yolo
 from .core.similarity import group_by_similarity, hash_images
 from .split.assignment import assign_groups
-from .validate.rules import Finding, Roles, check_image
+from .validate.rules import Finding, RuleSet, check_image
 from .visualize.palette import build_palette
 from .visualize.rendering import draw_boxes
 
@@ -21,7 +21,7 @@ __all__ = [
     "Dataset",
     "Finding",
     "ImageEntry",
-    "Roles",
+    "RuleSet",
     "Split",
     "assign_groups",
     "build_palette",

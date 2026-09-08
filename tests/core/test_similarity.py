@@ -4,7 +4,7 @@ from pathlib import Path
 
 import imagehash
 
-from epi_dataset_toolkit.core.similarity import group_by_similarity
+from yolo_dataset_toolkit.core.similarity import group_by_similarity
 
 
 def signature(name: str, hex_hash: str):

@@ -14,7 +14,7 @@ from .assignment import assign_groups, parse_ratios
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        prog="epi-split",
+        prog="yolo-split",
         description="Split a dataset into train/valid/test without leaking duplicates.",
     )
     add_source_arguments(parser)
@@ -66,6 +66,25 @@ def main(argv: list[str] | None = None) -> int:
         print(f"{len(images)} imagens, sem agrupamento — duplicatas podem vazar")
 
     assignment = assign_groups(groups, ratios, seed=args.seed)
+
+    # A group cannot be broken, so one group holding most of the dataset makes
+    # the requested ratios unreachable and can empty a split entirely. Writing
+    # that out silently is the worst outcome: training would start with no
+    # validation set and nothing would say so.
+    empty = [name for name, paths in assignment.items() if not paths]
+    if empty:
+        biggest = max(len(group) for group in groups)
+        share = 100 * biggest / len(images)
+        print(
+            f"error: {', '.join(empty)} ficaria vazio.\n"
+            f"  o maior grupo tem {biggest} das {len(images)} imagens ({share:.0f}%),"
+            f" e um grupo não pode ser dividido.\n"
+            f"  tente --distance menor (agrupa menos) ou --group-by none"
+            f" (sem proteção contra vazamento).",
+            file=sys.stderr,
+        )
+        return 1
+
     labels = {image: label for image, label in labelled}
 
     for name, paths in assignment.items():

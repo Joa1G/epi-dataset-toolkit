@@ -15,7 +15,7 @@ from .coco import ImageEntry, from_coco, label_path_for, to_coco, to_yolo_lines
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        prog="epi-convert",
+        prog="yolo-convert",
         description="Convert a detection dataset between YOLO and COCO.",
     )
     add_source_arguments(parser)

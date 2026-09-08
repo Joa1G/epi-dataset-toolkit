@@ -1,7 +1,7 @@
 [project]
-name = "epi-dataset-toolkit"
+name = "yolo-dataset-toolkit"
 version = "0.1.0"
-description = "Curation and auditing tools for PPE object-detection datasets"
+description = "Curation and auditing tools for YOLO object-detection datasets"
 readme = "README.md"
 authors = [
     { name = "João Gabriel Gomes", email = "j.gabriel.gomes2976@gmail.com" }
@@ -15,11 +15,11 @@ dependencies = [
 ]
 
 [project.scripts]
-epi-visualize = "epi_dataset_toolkit.visualize.main:main"
-epi-validate = "epi_dataset_toolkit.validate.main:main"
-epi-dedup = "epi_dataset_toolkit.dedup.main:main"
-epi-split = "epi_dataset_toolkit.split.main:main"
-epi-convert = "epi_dataset_toolkit.convert.main:main"
+yolo-visualize = "yolo_dataset_toolkit.visualize.main:main"
+yolo-validate = "yolo_dataset_toolkit.validate.main:main"
+yolo-dedup = "yolo_dataset_toolkit.dedup.main:main"
+yolo-split = "yolo_dataset_toolkit.split.main:main"
+yolo-convert = "yolo_dataset_toolkit.convert.main:main"
 
 [build-system]
 requires = ["uv_build>=0.12.5,<0.13.0"]

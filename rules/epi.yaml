@@ -1,0 +1,40 @@
+# Regras do dataset de EPI em canteiro de obra.
+#
+# Este arquivo é o exemplo de referência: as quatro regras abaixo saíram do
+# ANNOTATION_GUIDE.md e são as que o toolkit usava embutidas antes de as
+# regras virarem declarativas.
+#
+#   yolo-validate --data data/data.yaml --rules rules/epi.yaml
+
+# Como se decide que uma caixa "pertence" a outra.
+#   aligned      alinhada horizontalmente e encostando  (padrão)
+#   inside       centro dentro da outra caixa
+#   overlapping  qualquer área em comum
+#
+# aligned é o padrão porque sobrevive a anotação real: capacete fica no alto
+# da cabeça e é desenhado transbordando o corpo, então exigir contenção por
+# área rejeitaria capacetes que claramente são da pessoa.
+association: aligned
+
+rules:
+  # Regra 3 do guia: toda pessoa tem cabeça anotada, coberta ou não.
+  - class: person
+    contains_any: [head, helmet]
+    name: person-sem-cabeca
+
+  # Regras 1 e 3: cabeça implica pessoa. Capacete solto é permitido pela
+  # regra 5, cabeça solta não tem caso legítimo.
+  - class: head
+    within_any: [person]
+    name: head-sem-person
+
+  # Regra 5: EPI só conta quando está sendo usado.
+  - class: reflective-vest
+    within_any: [person]
+    name: colete-sem-person
+
+  # As duas classes descrevem a mesma cabeça: coberta ou descoberta, nunca
+  # as duas.
+  - exclusive: [head, helmet]
+    iou: 0.5
+    name: head-e-helmet-juntos

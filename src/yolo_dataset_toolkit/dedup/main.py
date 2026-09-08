@@ -9,7 +9,7 @@ from ..core.similarity import DEFAULT_DISTANCE, group_by_similarity, hash_images
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        prog="epi-dedup",
+        prog="yolo-dedup",
         description="Find near-identical images, the ones that leak across a split.",
     )
     add_source_arguments(parser)

@@ -10,7 +10,7 @@ from pathlib import Path
 
 import pytest
 
-PACKAGE = Path(__file__).resolve().parents[1] / "src" / "epi_dataset_toolkit"
+PACKAGE = Path(__file__).resolve().parents[1] / "src" / "yolo_dataset_toolkit"
 TOOLS = ("visualize", "validate", "dedup", "split", "convert")
 
 

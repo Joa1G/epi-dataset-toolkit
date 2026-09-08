@@ -8,7 +8,7 @@ from pathlib import Path
 from ..core.boxes import AnnotationError, Box
 from ..core.cli import READERS, add_source_arguments, load_dataset
 from ..core.datasets import IMAGE_SUFFIXES
-from .rules import Finding, Roles, check_image
+from .rules import RuleSet, check_image
 
 # Enough lines to see the shape of a problem without burying the summary.
 _EXAMPLES_PER_RULE = 5
@@ -16,8 +16,8 @@ _EXAMPLES_PER_RULE = 5
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        prog="epi-validate",
-        description="Audit a detection dataset for broken labels and rule violations.",
+        prog="yolo-validate",
+        description="Audit a YOLO detection dataset for broken labels and rule violations.",
     )
     add_source_arguments(parser)
 
@@ -29,10 +29,9 @@ def build_parser() -> argparse.ArgumentParser:
         help=f"lines shown per problem (default: {_EXAMPLES_PER_RULE}, 0 = all)",
     )
     parser.add_argument(
-        "--no-rules",
-        dest="rules",
-        action="store_false",
-        help="check only structure, skipping the ANNOTATION_GUIDE.md rules",
+        "--rules",
+        type=Path,
+        help="rules file declaring how this dataset's classes relate",
     )
     parser.add_argument(
         "--strict",
@@ -53,10 +52,16 @@ def main(argv: list[str] | None = None) -> int:
         return 2
 
     reader = READERS[args.format]
-    # The guide's rules describe this dataset's conventions. Another dataset
-    # may annotate the same classes by different ones, and reporting that as
-    # hundreds of errors would say more about us than about it.
-    roles = Roles.from_names(dataset.class_names) if args.rules else Roles()
+    # Relation rules are one dataset's conventions, so they only run when the
+    # caller names a file. Guessing them from the class names would report
+    # another dataset's different conventions as hundreds of errors.
+    rules = None
+    if args.rules:
+        try:
+            rules = RuleSet.from_file(args.rules).resolve(dataset.class_names)
+        except (AnnotationError, OSError) as exc:
+            print(f"error: {exc}", file=sys.stderr)
+            return 2
 
     found: dict[str, list[str]] = {}
     counts: Counter[int] = Counter()
@@ -81,7 +86,7 @@ def main(argv: list[str] | None = None) -> int:
             empty += 1
         counts.update(box.class_id for box in boxes)
 
-        for finding in check_image(boxes, dataset.class_names, roles):
+        for finding in check_image(boxes, dataset.class_names, rules):
             _record(found, finding.rule, f"{image_path.name}: {finding.detail}")
 
     for orphan in _orphan_labels(split):
