@@ -31,6 +31,13 @@ uv run yolo-split     --data dataset/data.yaml --out dataset-split
 O `yolo-split` já escreve um `data.yaml`, então dali em diante tudo aceita
 `--data dataset-split/data.yaml`.
 
+> **De onde este caminho continua.** Este repositório termina quando o dataset
+> está pronto para treinar. O
+> [canteiro-pipeline](https://github.com/Joa1G/canteiro-pipeline) começa
+> exatamente aí: lê esse mesmo `data.yaml`, treina, rastreia objetos num vídeo
+> e transforma permanência por zona em carta de controle. A saída de um é a
+> entrada do outro.
+
 > **Estudo de caso.** O toolkit nasceu de um problema concreto — detecção de
 > EPI em canteiro de obra — e foi desenvolvido contra um dataset próprio de 278
 > imagens anotadas à mão. Esse caso está documentado em
