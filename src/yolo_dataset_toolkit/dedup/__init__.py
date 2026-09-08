@@ -1,1 +1,1 @@
-"""epi-dedup: achar frames quase idênticos."""
+"""yolo-dedup: achar frames quase idênticos."""

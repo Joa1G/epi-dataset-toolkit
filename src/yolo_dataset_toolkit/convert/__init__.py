@@ -1,1 +1,1 @@
-"""epi-convert: converter entre YOLO e COCO."""
+"""yolo-convert: converter entre YOLO e COCO."""

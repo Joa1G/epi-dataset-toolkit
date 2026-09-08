@@ -46,8 +46,12 @@ contrário deixa passar exatamente o que o sistema deveria flagrar.
 Invariante do dataset, sem exceção — a regra 1 existe justamente para que
 ela nunca seja quebrada.
 
-É a regra mais fácil de verificar automaticamente, e por isso a mais útil:
-`epi-validate` a checa em todas as imagens.
+É a regra mais fácil de verificar automaticamente, e por isso a mais útil. Ela
+está declarada em [`rules/epi.yaml`](rules/epi.yaml):
+
+```bash
+yolo-validate --data data/data.yaml --rules rules/epi.yaml
+```
 
 ### 4. Pessoas parcialmente visíveis contam
 

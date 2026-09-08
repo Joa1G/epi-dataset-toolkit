@@ -1,6 +1,6 @@
 # Exemplos
 
-Saída do `epi-visualize` sobre o dataset anotado à mão. As imagens foram
+Saída do `yolo-visualize` sobre o dataset anotado à mão. As imagens foram
 reduzidas para 1280px antes de desenhar — como as coordenadas YOLO são
 normalizadas, o mesmo `.txt` vale nos dois tamanhos.
 
@@ -39,7 +39,7 @@ cor decodificável.
 
 ![](05-violacao-person-sem-cabeca.jpg)
 
-Achado pelo `epi-validate`. O trabalhador agachado à esquerda tem `person` e
+Achado pelo `yolo-validate`. O trabalhador agachado à esquerda tem `person` e
 `reflective-vest`, mas ninguém anotou a cabeça dele — quebra a
 [regra 3](../ANNOTATION_GUIDE.md#3-toda-person-tem-pelo-menos-um-head-ou-um-helmet).
 Pessoas curvadas ou cortadas pela borda são onde isso acontece.

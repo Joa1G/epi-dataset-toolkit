@@ -1,1 +1,1 @@
-"""epi-validate: auditar estrutura e regras de anotação."""
+"""yolo-validate: auditar estrutura e regras de anotação."""

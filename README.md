@@ -262,7 +262,7 @@ arquivos de imagem precisam ser copiados à parte.
 Uma pasta por ferramenta, mais `core/` para o que é compartilhado:
 
 ```
-src/epi_dataset_toolkit/
+src/yolo_dataset_toolkit/
 ├── core/            o que mais de uma ferramenta precisa
 │   ├── boxes.py         o tipo Box (coordenadas normalizadas), vocabulário comum
 │   ├── formats.py       leitores de anotação, um por formato
@@ -274,7 +274,7 @@ src/epi_dataset_toolkit/
 │   ├── rendering.py     desenhar caixas; não conhece disco nem formato
 │   └── main.py
 ├── validate/        yolo-validate
-│   ├── rules.py         as checagens, puras: sem disco, sem CLI, sem OpenCV
+│   ├── rules.py         checagens e parser do arquivo de regras; puro
 │   └── main.py
 ├── dedup/           yolo-dedup
 │   └── main.py
@@ -308,7 +308,9 @@ tests/
 
 O protocolo `AnnotationReader` assume **um arquivo por imagem**, o que vale
 para YOLO e para os formatos XML por imagem — para esses, adicionar suporte é
-escrever a função e registrá-la no dicionário `READERS`, e nada mais muda.
+escrever a função e registrá-la no dicionário `READERS`, e nada mais muda. A
+flag `--format`, que todas as cinco ferramentas aceitam, é o que escolhe entre
+os leitores registrados; hoje só existe `yolo`.
 
 COCO não cabe aí, e escrever a Etapa 5 foi o que mostrou isso: o documento é
 único para o dataset inteiro e carrega as dimensões das imagens contra as
